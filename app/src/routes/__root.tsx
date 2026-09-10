@@ -81,7 +81,7 @@ function NotFoundComponent() {
   );
 }
 
-ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   useEffect(() => {
     reportHiggsfieldError(error instanceof Error ? error : new Error(String(error ?? "Unknown")), { boundary: "tanstack_root_error_component" });
