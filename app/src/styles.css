@@ -1,0 +1,469 @@
+/* Cascade layer order: reset lowest, then Tailwind/Quanta base, then
+ * components and finally utilities — so Quanta's q-* utilities (e.g.
+ * q-button-*) always win over global element resets. */
+@layer reset, theme, base, components, utilities;
+
+@import "tailwindcss" source(none);
+@source "../src";
+
+/* New in-app Quanta-style components (moved out of the quanta package). Their
+ * CSS uses Tailwind v4 @utility/@source, so it must load through this tailwind
+ * entry. Ordering mirrors quanta's components.css (composer after button;
+ * media-card + generation-card after media). */
+
+
+@custom-variant dark (&:where([data-theme="default-dark"], [data-theme="default-dark"] *));
+
+/*
+ * Quanta is the visual source of truth. This file imports Quanta's Tailwind
+ * entry once; that entry brings in primitives, semantic theme variables,
+ * typography, z-index, border-width, and q-* component utilities.
+ *
+ * Generated app layout should use normal Tailwind spacing (`p-4`, `gap-2`,
+ * `mt-6`, `h-10`) and Quanta semantic utilities for color/type
+ * (`bg-q-background-primary`, `text-q-body-md-regular`). Do not use old numeric
+ * token classes such as `px-400` / `gap-200`, and do not reach for raw
+ * q-spacing vars in app code. Quanta component internals own their q-* classes.
+ *
+ * The `--spacing: 0.25rem` restoration keeps native Tailwind layout utilities
+ * stable for generated apps and legacy scaffold components. The inline theme
+ * aliases below keep shadcn-style imports rendering while new UI migrates to
+ * Quanta components.
+ */
+@theme {
+  --spacing: 0.25rem;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --color-background: var(--hf-color-background-primary);
+  --color-foreground: var(--hf-color-text-primary);
+  --color-card: var(--hf-color-background-secondary);
+  --color-card-foreground: var(--hf-color-text-primary);
+  --color-popover: var(--hf-color-background-secondary);
+  --color-popover-foreground: var(--hf-color-text-primary);
+  --color-primary: var(--hf-color-button-brand);
+  --color-primary-foreground: var(--hf-color-button-label-brand);
+  --color-secondary: var(--hf-color-background-secondary);
+  --color-secondary-foreground: var(--hf-color-text-primary);
+  --color-muted: var(--hf-color-background-tertiary);
+  --color-muted-foreground: var(--hf-color-text-secondary);
+  --color-accent: var(--hf-color-overlay-hover);
+  --color-accent-foreground: var(--hf-color-text-primary);
+  --color-destructive: var(--hf-color-state-error-bg);
+  --color-destructive-foreground: var(--hf-color-state-error-fg);
+  --color-border: var(--hf-color-border-default);
+  --color-input: var(--hf-color-border-default);
+  --color-ring: var(--hf-color-border-focus);
+  --color-ring-offset-background: var(--hf-color-background-primary);
+
+  --color-chart-1: var(--hf-color-lime-500);
+  --color-chart-2: var(--hf-color-pink-500);
+  --color-chart-3: var(--hf-color-blue-500);
+  --color-chart-4: var(--hf-color-yellow-500);
+  --color-chart-5: var(--hf-color-purple-500);
+
+  --color-sidebar: var(--hf-color-background-secondary);
+  --color-sidebar-foreground: var(--hf-color-text-primary);
+  --color-sidebar-primary: var(--hf-color-button-brand);
+  --color-sidebar-primary-foreground: var(--hf-color-button-label-brand);
+  --color-sidebar-accent: var(--hf-color-overlay-hover);
+  --color-sidebar-accent-foreground: var(--hf-color-text-primary);
+  --color-sidebar-border: var(--hf-color-border-default);
+  --color-sidebar-ring: var(--hf-color-border-focus);
+}
+
+:root {
+  --radius: 0.625rem;
+}
+
+@layer base {
+  html {
+    background-color: var(--hf-color-background-primary);
+    color: var(--hf-color-text-primary);
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--hf-color-background-primary);
+    color: var(--hf-color-text-primary);
+    font-family: var(--hf-type-family-secondary);
+  }
+
+  * {
+    border-color: var(--hf-color-border-default);
+  }
+}
+
+
+/* ================= PERSONA studio site ================= */
+
+@font-face {
+  font-family: "Awesome Serif";
+  src: url("/fonts/AwesomeSerif-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.ps-root {
+  --ps-paper: #fefdfc;
+  --ps-ink: #080404;
+  --ps-red: #f11213;
+  background-color: var(--ps-paper);
+  color: var(--ps-ink);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  overflow-x: clip;
+}
+
+/* Everything is square. No element in this site carries a radius. */
+.ps-root *,
+.ps-root *::before,
+.ps-root *::after {
+  border-radius: 0 !important;
+}
+
+.ps-root .ps-serif,
+.ps-root h1,
+.ps-root h2 {
+  font-family: "Awesome Serif", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.ps-root .ps-sans {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ps-root ::selection {
+  background-color: var(--ps-red);
+  color: var(--ps-ink);
+}
+
+.ps-root input,
+.ps-root textarea,
+.ps-root button,
+.ps-root select {
+  font-family: inherit;
+  font-weight: 400;
+}
+
+/* Background: flat paper. */
+.ps-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--ps-paper);
+}
+
+/* Buttons: ink block, Helvetica Regular. Hover fades to red, press dims. */
+.ps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  height: 52px;
+  background: var(--ps-ink);
+  color: var(--ps-paper);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
+  text-decoration: none;
+  border: 1px solid var(--ps-ink);
+  cursor: pointer;
+  transition:
+    background-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
+    border-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
+    color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 0.2s ease;
+}
+
+.ps-btn:hover {
+  background: var(--ps-red);
+  border-color: var(--ps-red);
+  color: var(--ps-paper);
+}
+
+.ps-btn:active {
+  opacity: 0.85;
+}
+
+.ps-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.ps-btn-red {
+  background: var(--ps-red);
+  border-color: var(--ps-red);
+}
+
+.ps-btn-red:hover {
+  background: var(--ps-ink);
+  border-color: var(--ps-ink);
+}
+
+.ps-btn-ghost {
+  background: transparent;
+  color: var(--ps-ink);
+  border-color: var(--ps-ink);
+}
+
+.ps-btn-ghost:hover {
+  background: var(--ps-red);
+  border-color: var(--ps-red);
+  color: var(--ps-paper);
+}
+
+.ps-btn-sm {
+  height: 40px;
+  padding: 0 18px;
+  font-size: 13px;
+}
+
+/* Project page button: 232 x 74 on the 3840 frame. */
+.ps-btn-proj {
+  height: clamp(26px, 1.8vw, 34px);
+  padding: 0 clamp(12px, 1.1vw, 20px);
+  font-size: clamp(9px, 0.62vw, 12px);
+}
+
+/* Project page type, scaled from the 1440 frame with vw so proportions hold. */
+.ps-proj-mark {
+  width: clamp(12px, 1.1vw, 20px);
+  height: clamp(12px, 1.1vw, 20px);
+  object-fit: contain;
+  display: block;
+}
+.ps-proj-title { font-size: clamp(12px, 0.9vw, 16px); line-height: 1.2; }
+.ps-proj-sub { font-size: clamp(9px, 0.7vw, 12px); line-height: 1.35; max-width: 70%; }
+.ps-proj-label { font-size: clamp(10px, 0.76vw, 13px); line-height: 1.3; }
+.ps-proj-body { font-size: clamp(9.5px, 0.73vw, 12.5px); line-height: 1.5; }
+
+@media (max-width: 1023px) {
+  .ps-proj-title { font-size: 16px; }
+  .ps-proj-sub { font-size: 12px; max-width: 60%; }
+  .ps-proj-label { font-size: 13px; }
+  .ps-proj-body { font-size: 13px; }
+  .ps-proj-mark { width: 18px; height: 18px; }
+  .ps-btn-proj { height: 40px; padding: 0 18px; font-size: 13px; }
+}
+
+.ps-social {
+  color: rgba(8, 4, 4, 0.6);
+  transition: color 0.2s ease;
+}
+
+/* Back link on project pages: replaces the nav. */
+.ps-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(11px, 0.8vw, 13px);
+  color: var(--ps-ink);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.ps-back svg {
+  transition: transform 0.25s ease;
+}
+
+.ps-back:hover {
+  color: var(--ps-red);
+}
+
+.ps-back:hover svg {
+  transform: translateX(-3px);
+}
+
+.ps-social:hover {
+  color: var(--ps-red);
+}
+
+/* Work cards */
+.ps-card-media {
+  position: relative;
+  overflow: hidden;
+  background: rgba(8, 4, 4, 0.05);
+  aspect-ratio: 16 / 10;
+}
+
+.ps-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.ps-card:hover .ps-card-media img {
+  transform: scale(1.025);
+}
+
+/* Cursor-following label, only alive while the pointer is over an image. */
+.ps-cursor-chip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  pointer-events: none;
+  padding: 7px 10px;
+  background: var(--ps-ink);
+  color: var(--ps-paper);
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -100%) translateY(-6px);
+  transition: opacity 0.12s ease;
+}
+
+.ps-cursor-chip.is-on {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .ps-cursor-chip {
+    display: none;
+  }
+}
+
+/* Home buttons: three in a row on phones too. */
+@media (max-width: 767px) {
+  .ps-home-actions .ps-btn {
+    height: 40px;
+    padding: 0 12px;
+    font-size: 12px;
+    flex: 1 1 0;
+    white-space: nowrap;
+  }
+}
+
+.ps-arrow {
+  transition: transform 0.25s ease;
+}
+
+.ps-card:hover .ps-arrow {
+  transform: translate(3px, -3px);
+}
+
+/* Page entrance: the page fades up as a whole, then elements rise in sequence. */
+/* Opacity only: a transform here would turn the page into the containing
+ * block for position: fixed children (the View project chip). */
+.ps-page {
+  animation: ps-page-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+
+@keyframes ps-page-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Thin red progress line that draws across the top on each page load. */
+.ps-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--ps-red);
+  transform-origin: left center;
+  animation: ps-line 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  z-index: 50;
+  pointer-events: none;
+}
+
+@keyframes ps-line {
+  0% { transform: scaleX(0); opacity: 1; }
+  70% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+.ps-rise {
+  animation: ps-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.ps-rise-2 { animation-delay: 0.08s; }
+.ps-rise-3 { animation-delay: 0.16s; }
+.ps-rise-4 { animation-delay: 0.24s; }
+
+@keyframes ps-rise {
+  from { transform: translateY(14px); opacity: 0.001; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+
+/* Nav logo and social icons: quiet scale on hover. */
+.ps-nav-logo img {
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.ps-nav-logo:hover img {
+  transform: scale(1.06);
+}
+.ps-social:hover svg {
+  transform: translateY(-2px);
+}
+.ps-social svg {
+  transition: transform 0.25s ease;
+}
+
+/* Form fields */
+.ps-field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(8, 4, 4, 0.3);
+  padding: 12px 0;
+  font-size: 17px;
+  color: var(--ps-ink);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.ps-field:focus {
+  border-color: var(--ps-red);
+}
+
+.ps-field::placeholder {
+  color: rgba(8, 4, 4, 0.35);
+}
+
+.ps-area {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(8, 4, 4, 0.3);
+  padding: 16px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ps-ink);
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.ps-area:focus {
+  border-color: var(--ps-red);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-rise,
+  .ps-page,
+  .ps-page::before {
+    animation: none !important;
+  }
+  .ps-root * {
+    transition-duration: 0.01ms !important;
+  }
+}
