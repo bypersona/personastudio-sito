@@ -41,6 +41,8 @@ export const LINKS = {
   portal: "https://persona-client-portal.higgsfield.app",
   linkedin: "https://www.linkedin.com/company/bypersonastudio",
   instagram: "https://www.instagram.com/bypersonaa/",
+  behance: "https://www.behance.net/alessandrocau",
+  email: "hello@personastudio.co",
 };
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {

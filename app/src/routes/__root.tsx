@@ -49,10 +49,13 @@ function buildHead(meta: AppMeta) {
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: ogImage ? "summary_large_image" : "summary" },
+      { name: "twitter:card", content: "summary" },
       ...(ogImage
         ? [
             { property: "og:image", content: ogImage },
+            { property: "og:image:width", content: "1200" },
+            { property: "og:image:height", content: "1200" },
+            { property: "og:image:type", content: "image/jpeg" },
             { name: "twitter:image", content: ogImage },
           ]
         : []),
@@ -60,7 +63,13 @@ function buildHead(meta: AppMeta) {
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      ...(favicon ? [{ rel: "icon", href: favicon }] : []),
+      ...(favicon
+        ? [
+            { rel: "icon", type: "image/png", sizes: "192x192", href: favicon },
+            { rel: "icon", type: "image/png", sizes: "48x48", href: "/assets/favicon-48.png" },
+            { rel: "apple-touch-icon", sizes: "180x180", href: "/assets/apple-touch-icon.png" },
+          ]
+        : []),
     ],
   };
 }
@@ -84,7 +93,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   useEffect(() => {
-    reportHiggsfieldError(error instanceof Error ? error : new Error(String(error ?? "Unknown")), { boundary: "tanstack_root_error_component" });
+    reportHiggsfieldError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (

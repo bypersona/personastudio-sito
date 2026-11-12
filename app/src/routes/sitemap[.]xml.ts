@@ -6,7 +6,7 @@ export const Route = createFileRoute('/sitemap.xml')({
       GET: async ({ request }) => {
         const origin = new URL(request.url).origin
         const today = new Date().toISOString().split('T')[0]
-        const pages = ['/', '/work', '/audit', '/work/halvar', '/work/unitopia', '/work/betterself', '/work/aion']
+        const pages = ['/', '/work', '/audit', '/contact', '/work/halvar', '/work/unitopia', '/work/betterself', '/work/aion']
         const xml = [
           '<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
